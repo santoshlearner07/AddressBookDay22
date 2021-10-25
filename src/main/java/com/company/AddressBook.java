@@ -1,184 +1,124 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
-public class AddressBook {
-    Scanner sc = new Scanner(System.in);
-    ArrayList<UserDetails> PersonDetails = new ArrayList<>();
+public class AddressBook extends UserRelated {
+    static Scanner sc = new Scanner(System.in);
+    static ArrayList<UserInfo> PersonDetails = new ArrayList<>();
+    static HashMap<String, ArrayList<UserInfo>> hashmap = new HashMap<>();
 
-    public void addUserDetails() {
-        System.out.println("Add User Information -> ");
-        UserDetails userDetails = new UserDetails();
+    static AddressBook userDetails = new AddressBook();
 
-        System.out.println("Enter First name: ");
-        userDetails.setFirstName(sc.next());
-        System.out.println("Enter Last name: ");
-        userDetails.setLastName(sc.next());
-        System.out.println("Enter Address: ");
-        userDetails.setAddress(sc.next());
-        System.out.println("Enter your City: ");
-        userDetails.setCity(sc.next());
-        System.out.println("Enter your State: ");
-        userDetails.setState(sc.next());
-        System.out.println("Enter Zip code: ");
-        userDetails.setZip(sc.next());
-        System.out.println("Enter your Phone Number: ");
-        userDetails.setPhoneNumber(sc.next());
-        System.out.println("Enter your E-mail: ");
-        userDetails.setEmail(sc.next());
+    public void createAddressBook() {
 
-        System.out.println(PersonDetails.add(userDetails));
-        System.out.println(" Added " + PersonDetails);
-    }
+        while (true) {
+            System.out.println("Choose what you want to do: ");
+            System.out.println("1.Create new address book.\n2.Edit existing address book.\n3.Display all address books.\n4.exit");
+            int choose = sc.nextInt();
 
-    public void editUserDetails() {
-        Scanner pNum = new Scanner(System.in);
-        System.out.println("First add details to edit details, if added ignore message");
-        System.out.println("Confirm phone number to edit");
-        String confirmNumber = pNum.next();
-
-        for (int i = 0; i < PersonDetails.size(); i++) {
-            if (PersonDetails.get(i).getPhoneNumber().equals(confirmNumber)) {
-                System.out.println("What do You want to change" +
-                        "\n1.First Name\n2.Last Name\n3.Address\n4.city\n5.State\n6.Zip\n7.Mobile number\n8.Email");
-                int edit = sc.nextInt();
-                switch (edit) {
-                    case 1:
-                        System.out.println("Enter new first name");
-                        PersonDetails.get(i).setFirstName(sc.next());
-                        break;
-                    case 2:
-                        System.out.println("Enter new Last name");
-                        PersonDetails.get(i).setLastName(sc.next());
-                        break;
-                    case 3:
-                        System.out.println("Enter new Address");
-                        PersonDetails.get(i).setAddress(sc.next());
-                        break;
-                    case 4:
-                        System.out.println("Enter new City");
-                        PersonDetails.get(i).setCity(sc.next());
-                        break;
-                    case 5:
-                        System.out.println("Enter new State");
-                        PersonDetails.get(i).setState(sc.next());
-                        break;
-                    case 6:
-                        System.out.println("Enter new Zip");
-                        PersonDetails.get(i).setZip(sc.next());
-                        break;
-                    case 7:
-                        System.out.println("Enter new Mobile number");
-                        PersonDetails.get(i).setPhoneNumber(sc.next());
-                        break;
-                    case 8:
-                        System.out.println("Enter new E-mail");
-                        PersonDetails.get(i).setEmail(sc.next());
-                        break;
-                }
-                System.out.println("Edited list is: ");
-                System.out.println(PersonDetails);
-            } else {
-                System.out.println("Enter Valid Phone number -> ");
+            if (choose == 4) {
+                System.out.println("Exited");
+                break;
             }
+
+            switch (choose) {
+                case 1:
+                    System.out.println("Enter the name of address book: ");
+                    String address_name = sc.next();
+
+                    // condition to check for uniqueness of address book.
+                    if (hashmap.containsKey(address_name)) {
+                        System.out.println("Address book name exits, enter different name");
+                        break;
+                    }
+
+                    ArrayList<UserInfo> new_address_book = new ArrayList<>();
+                    PersonDetails = new_address_book;
+                    while (true) {
+                        System.out.println("Choose what you want to do: ");
+                        System.out.println("1.Add details.\n2.Edit details.\n3.Delete contact.\n4.Exit");
+                        int choose1 = sc.nextInt();
+                        if (choose1 == 4) {
+                            System.out.println("Exited");
+                            break;
+                        }
+                        switch (choose1) {
+                            case 1:
+                                userDetails.addDetails();
+                                break;
+                            case 2:
+                                userDetails.editDetails();
+                                break;
+                            case 3:
+                                userDetails.deleteUser();
+                                break;
+                            default:
+                                System.out.println("Choose valid option");
+                                break;
+                        }
+                        hashmap.put(address_name, PersonDetails);
+                        System.out.println(hashmap);
+                    }
+                    break;
+
+                case 2:
+                    System.out.println("Enter the name of address book: ");
+                    String address_name_old = sc.next();
+
+                    if (hashmap.containsKey(address_name_old)) {
+
+                        ArrayList<UserInfo> old_address_book = new ArrayList<>();
+                        PersonDetails = old_address_book;
+                        PersonDetails = hashmap.get(address_name_old);
+                        while (true) {
+                            System.out.println("Choose what you want to do: ");
+                            System.out.println("1.Add details.\n2.Edit details.\n3.Delete contact.\n4.Exit");
+                            int choose1 = sc.nextInt();
+                            if (choose1 == 4) {
+                                System.out.println("Exited");
+                                break;
+                            }
+                            switch (choose1) {
+                                case 1:
+                                    userDetails.addDetails();
+                                    break;
+                                case 2:
+                                    userDetails.editDetails();
+                                    break;
+                                case 3:
+                                    userDetails.deleteUser();
+                                    break;
+                                default:
+                                    System.out.println("Choose valid option");
+                                    break;
+                            }
+                            hashmap.put(address_name_old, PersonDetails);
+                            System.out.println(hashmap);
+                        }
+                    } else {
+                        System.out.println("Enter valid address book name");
+                    }
+                    break;
+
+                case 3:
+                    System.out.println(hashmap);
+                    break;
+
+                default:
+                    System.out.println("Enter valid option");
+
+            }
+
         }
 
     }
 
     public static void main(String[] args) {
-        System.out.println("Welcome to Address Book");
-        AddressBook addressBook = new AddressBook();
-        Scanner sc = new Scanner(System.in);
-        while (true) {
-            System.out.println("What do you want ? " +
-                    "1->Add Details \n 2-> Edit Details");
-            int select = sc.nextInt();
-            switch (select) {
-                case 1:
-                    addressBook.addUserDetails();
-                    break;
-                case 2:
-                    addressBook.editUserDetails();
-                    break;
-                default:
-                    System.out.println("Choose valid option");
-                    break;
-            }
-        }
-    }
-}
-class UserDetails {
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String eMail;
-    private String city;
-    private String state;
-    private String zip;
-    private String phoneNumber;
+        System.out.println("Welcome to Address Book program ");
+        userDetails.createAddressBook();
 
-    public String getFirstName() {
-        return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return eMail;
-    }
-
-    public void setEmail(String eMail) {
-        this.eMail = eMail;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
